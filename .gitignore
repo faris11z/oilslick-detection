@@ -1,0 +1,16 @@
+# Dataset — too large for git (14GB)
+data/
+
+# Model checkpoints — too large for git (>100MB each)
+checkpoints/
+results/*/checkpoints/
+
+# Legacy root-level outputs
+/plots/
+/results.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
