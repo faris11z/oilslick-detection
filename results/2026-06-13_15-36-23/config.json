@@ -1,0 +1,29 @@
+{
+  "run_id": "2026-06-13_15-36-23",
+  "device": "cuda",
+  "batch_size": 32,
+  "split": {
+    "model": "resnet18_v2",
+    "pretrained_init": true,
+    "dropout": 0.4,
+    "epochs": 80,
+    "lr": 5e-05,
+    "weight_decay": 0.0005,
+    "patience": 20,
+    "label_smoothing": 0.05,
+    "monitor": "f1",
+    "lr_schedule": "CosineAnnealingLR"
+  },
+  "preprocessing": {
+    "nodata_sentinel": -163.0,
+    "clip_min": -50,
+    "clip_max": 10,
+    "normalization": "z-score per channel (Welford on train split)"
+  },
+  "augmentation": {
+    "horizontal_flip": true,
+    "vertical_flip": true,
+    "rot90": true,
+    "gaussian_noise_std": 0.02
+  }
+}

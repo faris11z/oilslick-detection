@@ -1,0 +1,12 @@
+{
+  "random_split": {
+    "accuracy": 0.8036,
+    "f1": 0.8136,
+    "auroc": 0.8573
+  },
+  "geographic_split": {
+    "accuracy": 0.6824,
+    "f1": 0.7117,
+    "auroc": 0.8108
+  }
+}

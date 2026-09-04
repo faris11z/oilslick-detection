@@ -1,0 +1,115 @@
+Epoch   1/80  train_loss=0.6736  val_loss=0.5973  val_F1=0.6984  val_AUROC=0.7289  lr=5.00e-05 ✓
+  Checkpoint saved (epoch 1, F1=0.6984)
+Epoch   2/80  train_loss=0.6160  val_loss=0.5761  val_F1=0.7395  val_AUROC=0.7770  lr=4.99e-05 ✓
+  Checkpoint saved (epoch 2, F1=0.7395)
+Epoch   3/80  train_loss=0.6046  val_loss=0.5328  val_F1=0.7407  val_AUROC=0.7970  lr=4.98e-05 ✓
+  Checkpoint saved (epoch 3, F1=0.7407)
+Epoch   4/80  train_loss=0.5900  val_loss=0.5428  val_F1=0.7429  val_AUROC=0.7919  lr=4.97e-05 ✓
+  Checkpoint saved (epoch 4, F1=0.7429)
+Epoch   5/80  train_loss=0.5791  val_loss=0.5271  val_F1=0.7253  val_AUROC=0.8081  lr=4.95e-05
+Epoch   6/80  train_loss=0.5583  val_loss=0.5377  val_F1=0.7593  val_AUROC=0.8098  lr=4.93e-05 ✓
+  Checkpoint saved (epoch 6, F1=0.7593)
+Epoch   7/80  train_loss=0.5210  val_loss=0.5400  val_F1=0.7321  val_AUROC=0.8136  lr=4.91e-05
+Epoch   8/80  train_loss=0.5238  val_loss=0.4757  val_F1=0.7767  val_AUROC=0.8498  lr=4.88e-05 ✓
+  Checkpoint saved (epoch 8, F1=0.7767)
+Epoch   9/80  train_loss=0.5287  val_loss=0.4973  val_F1=0.7129  val_AUROC=0.8221  lr=4.85e-05
+Epoch  10/80  train_loss=0.5124  val_loss=0.5005  val_F1=0.7347  val_AUROC=0.8340  lr=4.81e-05
+Epoch  11/80  train_loss=0.4804  val_loss=0.4820  val_F1=0.7423  val_AUROC=0.8494  lr=4.77e-05
+Epoch  12/80  train_loss=0.4772  val_loss=0.5289  val_F1=0.7350  val_AUROC=0.8387  lr=4.73e-05
+Epoch  13/80  train_loss=0.4812  val_loss=0.4808  val_F1=0.7475  val_AUROC=0.8345  lr=4.68e-05
+Epoch  14/80  train_loss=0.4837  val_loss=0.4923  val_F1=0.6667  val_AUROC=0.8204  lr=4.63e-05
+Epoch  15/80  train_loss=0.4624  val_loss=0.4560  val_F1=0.7723  val_AUROC=0.8698  lr=4.58e-05
+Epoch  16/80  train_loss=0.4489  val_loss=0.4198  val_F1=0.7843  val_AUROC=0.8796  lr=4.52e-05 ✓
+  Checkpoint saved (epoch 16, F1=0.7843)
+Epoch  17/80  train_loss=0.4453  val_loss=0.4424  val_F1=0.7890  val_AUROC=0.8706  lr=4.46e-05 ✓
+  Checkpoint saved (epoch 17, F1=0.7890)
+Epoch  18/80  train_loss=0.4340  val_loss=0.4697  val_F1=0.7647  val_AUROC=0.8630  lr=4.40e-05
+Epoch  19/80  train_loss=0.4444  val_loss=0.4253  val_F1=0.7660  val_AUROC=0.8672  lr=4.34e-05
+Epoch  20/80  train_loss=0.4469  val_loss=0.4164  val_F1=0.7500  val_AUROC=0.8813  lr=4.27e-05
+Epoch  21/80  train_loss=0.4216  val_loss=0.4946  val_F1=0.7500  val_AUROC=0.8523  lr=4.20e-05
+Epoch  22/80  train_loss=0.4133  val_loss=0.5843  val_F1=0.6990  val_AUROC=0.7923  lr=4.12e-05
+Epoch  23/80  train_loss=0.4118  val_loss=0.4871  val_F1=0.7292  val_AUROC=0.8268  lr=4.05e-05
+Epoch  24/80  train_loss=0.4107  val_loss=0.4691  val_F1=0.6829  val_AUROC=0.8498  lr=3.97e-05
+Epoch  25/80  train_loss=0.3948  val_loss=0.4657  val_F1=0.7455  val_AUROC=0.8711  lr=3.89e-05
+Epoch  26/80  train_loss=0.3911  val_loss=0.4476  val_F1=0.7400  val_AUROC=0.8715  lr=3.81e-05
+Epoch  27/80  train_loss=0.3885  val_loss=0.5751  val_F1=0.6173  val_AUROC=0.8072  lr=3.72e-05
+Epoch  28/80  train_loss=0.3936  val_loss=0.4518  val_F1=0.7347  val_AUROC=0.8621  lr=3.63e-05
+Epoch  29/80  train_loss=0.3882  val_loss=0.5285  val_F1=0.6216  val_AUROC=0.8213  lr=3.55e-05
+Epoch  30/80  train_loss=0.3760  val_loss=0.4212  val_F1=0.7723  val_AUROC=0.8860  lr=3.46e-05
+Epoch  31/80  train_loss=0.3627  val_loss=0.4992  val_F1=0.7073  val_AUROC=0.8434  lr=3.37e-05
+Epoch  32/80  train_loss=0.3672  val_loss=0.4449  val_F1=0.7789  val_AUROC=0.8706  lr=3.27e-05
+Epoch  33/80  train_loss=0.3612  val_loss=0.4469  val_F1=0.7500  val_AUROC=0.8689  lr=3.18e-05
+Epoch  34/80  train_loss=0.3442  val_loss=0.5061  val_F1=0.7160  val_AUROC=0.8489  lr=3.08e-05
+Epoch  35/80  train_loss=0.3522  val_loss=0.4205  val_F1=0.7561  val_AUROC=0.8843  lr=2.99e-05
+Epoch  36/80  train_loss=0.3592  val_loss=0.5018  val_F1=0.7525  val_AUROC=0.8489  lr=2.89e-05
+Epoch  37/80  train_loss=0.3384  val_loss=0.4659  val_F1=0.7561  val_AUROC=0.8528  lr=2.79e-05
+Early stopping at epoch 37 (best val F1 = 0.7890)
+Epoch   1/80  train_loss=0.6892  val_loss=0.5659  val_F1=0.7665  val_AUROC=0.7806  lr=5.00e-05 ✓
+  Checkpoint saved (epoch 1, F1=0.7665)
+Epoch   2/80  train_loss=0.6201  val_loss=0.6203  val_F1=0.7389  val_AUROC=0.7615  lr=4.99e-05
+Epoch   3/80  train_loss=0.6111  val_loss=0.5872  val_F1=0.7417  val_AUROC=0.7609  lr=4.98e-05
+Epoch   4/80  train_loss=0.6053  val_loss=0.5744  val_F1=0.7211  val_AUROC=0.7653  lr=4.97e-05
+Epoch   5/80  train_loss=0.5820  val_loss=0.5422  val_F1=0.7750  val_AUROC=0.7897  lr=4.95e-05 ✓
+  Checkpoint saved (epoch 5, F1=0.7750)
+Epoch   6/80  train_loss=0.5563  val_loss=0.5258  val_F1=0.7595  val_AUROC=0.8129  lr=4.93e-05
+Epoch   7/80  train_loss=0.5523  val_loss=0.5731  val_F1=0.7451  val_AUROC=0.8086  lr=4.91e-05
+Epoch   8/80  train_loss=0.5438  val_loss=0.5027  val_F1=0.7867  val_AUROC=0.8411  lr=4.88e-05 ✓
+  Checkpoint saved (epoch 8, F1=0.7867)
+Epoch   9/80  train_loss=0.5113  val_loss=0.5592  val_F1=0.7654  val_AUROC=0.8207  lr=4.85e-05
+Epoch  10/80  train_loss=0.5166  val_loss=0.5221  val_F1=0.7391  val_AUROC=0.8304  lr=4.81e-05
+Epoch  11/80  train_loss=0.5100  val_loss=0.5515  val_F1=0.7188  val_AUROC=0.8384  lr=4.77e-05
+Epoch  12/80  train_loss=0.5310  val_loss=0.5124  val_F1=0.7763  val_AUROC=0.8417  lr=4.73e-05
+Epoch  13/80  train_loss=0.4943  val_loss=0.4939  val_F1=0.7619  val_AUROC=0.8477  lr=4.68e-05
+Epoch  14/80  train_loss=0.4741  val_loss=0.4639  val_F1=0.7429  val_AUROC=0.8608  lr=4.63e-05
+Epoch  15/80  train_loss=0.4924  val_loss=0.4893  val_F1=0.7619  val_AUROC=0.8527  lr=4.58e-05
+Epoch  16/80  train_loss=0.4378  val_loss=0.4953  val_F1=0.8025  val_AUROC=0.8552  lr=4.52e-05 ✓
+  Checkpoint saved (epoch 16, F1=0.8025)
+Epoch  17/80  train_loss=0.4710  val_loss=0.5236  val_F1=0.7500  val_AUROC=0.8523  lr=4.46e-05
+Epoch  18/80  train_loss=0.4351  val_loss=0.5099  val_F1=0.8000  val_AUROC=0.8558  lr=4.40e-05
+Epoch  19/80  train_loss=0.4299  val_loss=0.4913  val_F1=0.8075  val_AUROC=0.8572  lr=4.34e-05 ✓
+  Checkpoint saved (epoch 19, F1=0.8075)
+Epoch  20/80  train_loss=0.4237  val_loss=0.4935  val_F1=0.7742  val_AUROC=0.8533  lr=4.27e-05
+Epoch  21/80  train_loss=0.3995  val_loss=0.4981  val_F1=0.8075  val_AUROC=0.8697  lr=4.20e-05
+Epoch  22/80  train_loss=0.4236  val_loss=0.5072  val_F1=0.7612  val_AUROC=0.8495  lr=4.12e-05
+Epoch  23/80  train_loss=0.4204  val_loss=0.5062  val_F1=0.7500  val_AUROC=0.8509  lr=4.05e-05
+Epoch  24/80  train_loss=0.4367  val_loss=0.5512  val_F1=0.7550  val_AUROC=0.8360  lr=3.97e-05
+Epoch  25/80  train_loss=0.3850  val_loss=0.5175  val_F1=0.7857  val_AUROC=0.8570  lr=3.89e-05
+Epoch  26/80  train_loss=0.3972  val_loss=0.4710  val_F1=0.7919  val_AUROC=0.8564  lr=3.81e-05
+Epoch  27/80  train_loss=0.3849  val_loss=0.4763  val_F1=0.7973  val_AUROC=0.8765  lr=3.72e-05
+Epoch  28/80  train_loss=0.3814  val_loss=0.4608  val_F1=0.8228  val_AUROC=0.8767  lr=3.63e-05 ✓
+  Checkpoint saved (epoch 28, F1=0.8228)
+Epoch  29/80  train_loss=0.3752  val_loss=0.5071  val_F1=0.8000  val_AUROC=0.8584  lr=3.55e-05
+Epoch  30/80  train_loss=0.3685  val_loss=0.4995  val_F1=0.7947  val_AUROC=0.8570  lr=3.46e-05
+Epoch  31/80  train_loss=0.3727  val_loss=0.5884  val_F1=0.8025  val_AUROC=0.8419  lr=3.37e-05
+Epoch  32/80  train_loss=0.3473  val_loss=0.4887  val_F1=0.7887  val_AUROC=0.8608  lr=3.27e-05
+Epoch  33/80  train_loss=0.3550  val_loss=0.5622  val_F1=0.8050  val_AUROC=0.8507  lr=3.18e-05
+Epoch  34/80  train_loss=0.3517  val_loss=0.4762  val_F1=0.8026  val_AUROC=0.8578  lr=3.08e-05
+Epoch  35/80  train_loss=0.3435  val_loss=0.4674  val_F1=0.7943  val_AUROC=0.8705  lr=2.99e-05
+Epoch  36/80  train_loss=0.3344  val_loss=0.5706  val_F1=0.7975  val_AUROC=0.8630  lr=2.89e-05
+Epoch  37/80  train_loss=0.3473  val_loss=0.4638  val_F1=0.7778  val_AUROC=0.8670  lr=2.79e-05
+Epoch  38/80  train_loss=0.3330  val_loss=0.4949  val_F1=0.8182  val_AUROC=0.8680  lr=2.70e-05
+Epoch  39/80  train_loss=0.3142  val_loss=0.4984  val_F1=0.8049  val_AUROC=0.8658  lr=2.60e-05
+Epoch  40/80  train_loss=0.3446  val_loss=0.4771  val_F1=0.8026  val_AUROC=0.8763  lr=2.50e-05
+Epoch  41/80  train_loss=0.3088  val_loss=0.4328  val_F1=0.8535  val_AUROC=0.8902  lr=2.40e-05 ✓
+  Checkpoint saved (epoch 41, F1=0.8535)
+Epoch  42/80  train_loss=0.3212  val_loss=0.5821  val_F1=0.8049  val_AUROC=0.8646  lr=2.30e-05
+Epoch  43/80  train_loss=0.3162  val_loss=0.4295  val_F1=0.7826  val_AUROC=0.8902  lr=2.21e-05
+Epoch  44/80  train_loss=0.2986  val_loss=0.4383  val_F1=0.8182  val_AUROC=0.8832  lr=2.11e-05
+Epoch  45/80  train_loss=0.3112  val_loss=0.4701  val_F1=0.8182  val_AUROC=0.8771  lr=2.01e-05
+Epoch  46/80  train_loss=0.3056  val_loss=0.4651  val_F1=0.7778  val_AUROC=0.8721  lr=1.92e-05
+Epoch  47/80  train_loss=0.2957  val_loss=0.4855  val_F1=0.8272  val_AUROC=0.8781  lr=1.82e-05
+Epoch  48/80  train_loss=0.2871  val_loss=0.4223  val_F1=0.8333  val_AUROC=0.8954  lr=1.73e-05
+Epoch  49/80  train_loss=0.2979  val_loss=0.4259  val_F1=0.7945  val_AUROC=0.8860  lr=1.63e-05
+Epoch  50/80  train_loss=0.3012  val_loss=0.5037  val_F1=0.8228  val_AUROC=0.8745  lr=1.54e-05
+Epoch  51/80  train_loss=0.2875  val_loss=0.4508  val_F1=0.8027  val_AUROC=0.8783  lr=1.45e-05
+Epoch  52/80  train_loss=0.2928  val_loss=0.5162  val_F1=0.8121  val_AUROC=0.8678  lr=1.37e-05
+Epoch  53/80  train_loss=0.3026  val_loss=0.4351  val_F1=0.8079  val_AUROC=0.8886  lr=1.28e-05
+Epoch  54/80  train_loss=0.2846  val_loss=0.4556  val_F1=0.8250  val_AUROC=0.8830  lr=1.19e-05
+Epoch  55/80  train_loss=0.2930  val_loss=0.4811  val_F1=0.8313  val_AUROC=0.8924  lr=1.11e-05
+Epoch  56/80  train_loss=0.3070  val_loss=0.4538  val_F1=0.8323  val_AUROC=0.8932  lr=1.03e-05
+Epoch  57/80  train_loss=0.2871  val_loss=0.4328  val_F1=0.8354  val_AUROC=0.8944  lr=9.52e-06
+Epoch  58/80  train_loss=0.2816  val_loss=0.4598  val_F1=0.8205  val_AUROC=0.8868  lr=8.76e-06
+Epoch  59/80  train_loss=0.2816  val_loss=0.4381  val_F1=0.8133  val_AUROC=0.8866  lr=8.03e-06
+Epoch  60/80  train_loss=0.2803  val_loss=0.4458  val_F1=0.8280  val_AUROC=0.8864  lr=7.32e-06
+Epoch  61/80  train_loss=0.2778  val_loss=0.4587  val_F1=0.8375  val_AUROC=0.8880  lr=6.64e-06
+Early stopping at epoch 61 (best val F1 = 0.8535)
