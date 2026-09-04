@@ -1,4 +1,4 @@
-# Oil Slick Detection — ResNet-18 Baseline + TerraMind Linear Probe
+# Oil Slick Detection - ResNet-18 Baseline + TerraMind Linear Probe
 
 Binary classification of **Sentinel-1 SAR satellite imagery** to detect the presence or absence of marine oil slicks. This project implements two models: a ResNet-18 baseline fully fine-tuned on 2-channel (VV/VH) SAR input, and a TerraMind-1.0-base geospatial foundation model used as a frozen feature extractor with a trained linear head. Both are evaluated under two split strategies: a standard random split and a geographically disjoint out-of-distribution split.
 
@@ -10,27 +10,27 @@ Binary classification of **Sentinel-1 SAR satellite imagery** to detect the pres
 1. [Problem Statement](#1-problem-statement)
 2. [Dataset](#2-dataset)
 3. [Data Exploration](#3-data-exploration)
-4. [Preprocessing — ResNet-18](#4-preprocessing--resnet-18)
-5. [Channel Statistics — Welford's Algorithm](#5-channel-statistics--welfords-algorithm)
+4. [Preprocessing - ResNet-18](#4-preprocessing--resnet-18)
+5. [Channel Statistics - Welford's Algorithm](#5-channel-statistics--welfords-algorithm)
 6. [Dataset Class and DataLoaders](#6-dataset-class-and-dataloaders)
-7. [Model Architecture — ResNet-18](#7-model-architecture--resnet-18)
-8. [Training Loop — ResNet-18](#8-training-loop--resnet-18)
+7. [Model Architecture - ResNet-18](#7-model-architecture--resnet-18)
+8. [Training Loop - ResNet-18](#8-training-loop--resnet-18)
 9. [Evaluation](#9-evaluation)
 10. [Results](#10-results)
 11. [Failure Case Analysis](#11-failure-case-analysis)
-12. [Standalone Training Script — ResNet-18](#12-standalone-training-script--resnet-18)
+12. [Standalone Training Script - ResNet-18](#12-standalone-training-script--resnet-18)
 
 **TerraMind linear probe**
 
-13. [Model Architecture — TerraMind](#13-model-architecture--terramind)
-14. [Preprocessing — TerraMind](#14-preprocessing--terramind)
+13. [Model Architecture - TerraMind](#13-model-architecture--terramind)
+14. [Preprocessing - TerraMind](#14-preprocessing--terramind)
 15. [Feature Extraction Strategy](#15-feature-extraction-strategy)
-16. [Training Loop — TerraMind Head](#16-training-loop--terramind-head)
-17. [Standalone Training Script — TerraMind](#17-standalone-training-script--terramind)
+16. [Training Loop - TerraMind Head](#16-training-loop--terramind-head)
+17. [Standalone Training Script - TerraMind](#17-standalone-training-script--terramind)
 
 **Ablation and outputs**
 
-18. [ResNet-18 from Scratch — Ablation](#18-resnet-18-from-scratch--ablation)
+18. [ResNet-18 from Scratch - Ablation](#18-resnet-18-from-scratch--ablation)
 19. [Comparison Plots](#19-comparison-plots)
 20. [Project Structure](#20-project-structure)
 
@@ -38,13 +38,13 @@ Binary classification of **Sentinel-1 SAR satellite imagery** to detect the pres
 
 ## 1. Problem Statement
 
-Marine oil slicks are a serious environmental hazard. Detecting them from satellite imagery enables rapid incident response. Sentinel-1 is a radar satellite (SAR — Synthetic Aperture Radar) that operates in all weather and lighting conditions, making it well-suited for operational maritime monitoring.
+Marine oil slicks are a serious environmental hazard. Detecting them from satellite imagery enables rapid incident response. Sentinel-1 is a radar satellite (SAR - Synthetic Aperture Radar) that operates in all weather and lighting conditions, making it well-suited for operational maritime monitoring.
 
 **Task:** Given a 224×224 pixel GeoTIFF chip with two radar polarisation channels (VV and VH), predict whether an oil slick is present (`label=1`) or absent (`label=0`).
 
 **Why SAR?** Unlike optical sensors, SAR penetrates cloud cover and works at night. Oil slicks dampen ocean surface roughness, producing a distinctive low-backscatter signature visible in both VV and VH channels.
 
-**Key challenge:** A model trained on one geographic region must generalise to unseen ocean areas and environmental conditions — tested via the geographic split.
+**Key challenge:** A model trained on one geographic region must generalise to unseen ocean areas and environmental conditions - tested via the geographic split.
 
 ---
 
@@ -53,13 +53,13 @@ Marine oil slicks are a serious environmental hazard. Detecting them from satell
 **Source:** WaterBench OilSlick dataset ([`metadata.csv`](data/data/OilSlick/metadata.csv))
 
 The dataset contains 1363 annotated samples across four categories:
-- `pos_*` — confirmed oil slick present (486 on disk)
-- `neg_*` — confirmed no oil slick (484 on disk)
-- `ext_pos_*` / `ext_neg_*` — extended set (11 on disk; excluded from training)
+- `pos_*` - confirmed oil slick present (486 on disk)
+- `neg_*` - confirmed no oil slick (484 on disk)
+- `ext_pos_*` / `ext_neg_*` - extended set (11 on disk; excluded from training)
 
 Each sample is a **2-band GeoTIFF** at 224×224 pixels:
-- **Band 1: VV** — vertically transmitted, vertically received polarisation
-- **Band 2: VH** — vertically transmitted, horizontally received polarisation
+- **Band 1: VV** - vertically transmitted, vertically received polarisation
+- **Band 2: VH** - vertically transmitted, horizontally received polarisation
 
 ```
 Cell 2 (notebook):
@@ -71,7 +71,7 @@ Cell 2 (notebook):
     # → TIF files: 981  (expected 1363)
 ```
 
-**Note:** Only 981 of 1363 annotated samples are physically on disk — the remainder were not downloaded. The pipeline filters automatically to only use samples present on disk.
+**Note:** Only 981 of 1363 annotated samples are physically on disk - the remainder were not downloaded. The pipeline filters automatically to only use samples present on disk.
 
 **Split files** are pre-generated text files listing sample IDs:
 
@@ -104,7 +104,7 @@ Samples are drawn from ocean regions worldwide. The geographic split specificall
 
 ### 3.3 Visualising SAR Chips (Cell `HxsFSjp33lHk`)
 
-Chips are loaded with `rasterio` and displayed using a 2nd–98th percentile stretch to account for the heavy-tailed dB distribution:
+Chips are loaded with `rasterio` and displayed using a 2nd-98th percentile stretch to account for the heavy-tailed dB distribution:
 
 ```python
 def load_chip(sample_id):
@@ -119,30 +119,30 @@ Visual inspection shows oil slicks appear as **dark, smooth patches** with low b
 ### 3.4 Raw Pixel Value Distribution (Cell `DF9F8FDN3lHk`)
 
 Examining 200 randomly sampled chips reveals:
-- **Mean VV: −28.8 dB**, Std: 42.6 — extremely high std driven by outliers
-- **Mean VH: −36.8 dB**, Std: 39.1 — similarly dominated by outliers
-- **Minimum: −163** — a sentinel nodata value (land mask / missing data)
-- **Maximum: ~1997** — extreme bright targets (ships, infrastructure)
+- **Mean VV: −28.8 dB**, Std: 42.6 - extremely high std driven by outliers
+- **Mean VH: −36.8 dB**, Std: 39.1 - similarly dominated by outliers
+- **Minimum: −163** - a sentinel nodata value (land mask / missing data)
+- **Maximum: ~1997** - extreme bright targets (ships, infrastructure)
 
 These outliers would dominate z-score normalisation and squash the meaningful ocean signal, motivating the clipping step described next.
 
 ---
 
-## 4. Preprocessing — ResNet-18
+## 4. Preprocessing - ResNet-18
 
-> Raw SAR values straight off the satellite are not suitable for a neural network. They contain missing data placeholders, extreme outliers from ships and coastlines, and wildly different value ranges between chips. This section describes how each chip is cleaned and standardised into a form the model can learn from — every step here is motivated by the data exploration findings above.
+> Raw SAR values straight off the satellite are not suitable for a neural network. They contain missing data placeholders, extreme outliers from ships and coastlines, and wildly different value ranges between chips. This section describes how each chip is cleaned and standardised into a form the model can learn from - every step here is motivated by the data exploration findings above.
 
 All preprocessing is applied inside `OilSlickDataset.__getitem__` in a deterministic, per-sample order:
 
 ```python
-# Step 1 — Mask nodata sentinel (Cell wvdxlDVr3lHl)
+# Step 1 - Mask nodata sentinel (Cell wvdxlDVr3lHl)
 chip[chip == -163.0] = 0.0
 
-# Step 2 — Clip to physically meaningful dB range
+# Step 2 - Clip to physically meaningful dB range
 chip[0] = np.clip(chip[0], -50, 10)   # VV channel
 chip[1] = np.clip(chip[1], -50, 10)   # VH channel
 
-# Step 3 — Z-score normalise per channel
+# Step 3 - Z-score normalise per channel
 chip[0] = (chip[0] - self.vv_mean) / (self.vv_std + 1e-8)
 chip[1] = (chip[1] - self.vh_mean) / (self.vh_std + 1e-8)
 ```
@@ -174,9 +174,9 @@ SAR chips have no preferred orientation (the satellite can overpass from any dir
 
 ---
 
-## 5. Channel Statistics — Welford's Algorithm
+## 5. Channel Statistics - Welford's Algorithm
 
-> Z-score normalisation requires knowing the mean and standard deviation of the training data — but we can't load all 655 training chips into memory at once (each chip is 224×224×2 float32, and reading them all would require ~1 GB). This section describes how we compute exact statistics in a single pass through the data without ever holding more than one chip in memory at a time.
+> Z-score normalisation requires knowing the mean and standard deviation of the training data - but we can't load all 655 training chips into memory at once (each chip is 224×224×2 float32, and reading them all would require ~1 GB). This section describes how we compute exact statistics in a single pass through the data without ever holding more than one chip in memory at a time.
 
 Normalisation statistics must be computed from the **training split only** to prevent information leakage from val/test. Loading all training pixels into memory would require ~1 GB, so instead we use **Welford's online algorithm** extended for batch-level merging (Cell `PQt0DBKSNUMU`):
 
@@ -240,16 +240,16 @@ def make_loaders(split_name, vv_mean, vv_std, vh_mean, vh_std):
 
 ---
 
-## 7. Model Architecture — ResNet-18
+## 7. Model Architecture - ResNet-18
 
 > The model is the part that actually learns to distinguish oil slicks from clean ocean. We use ResNet-18, a well-established image classification network, but it needs two modifications before it can work with SAR data: its input layer must be changed from 3 channels (RGB) to 2 channels (VV/VH), and its output layer must be changed from 1000 class scores (ImageNet) to a single oil-slick probability. This section explains how both changes are made without throwing away the pretrained knowledge the network already has.
 
 ### 7.1 Why ResNet-18?
 
 ResNet-18 was chosen as the baseline for three reasons:
-1. **Mature ImageNet pretraining** — feature extractors generalise well even to non-natural images
-2. **Small enough to train fast** — 11.2M parameters, converges in under an hour on a single GPU
-3. **Established benchmark** — widely used in remote sensing baselines, making results comparable
+1. **Mature ImageNet pretraining** - feature extractors generalise well even to non-natural images
+2. **Small enough to train fast** - 11.2M parameters, converges in under an hour on a single GPU
+3. **Established benchmark** - widely used in remote sensing baselines, making results comparable
 
 ### 7.2 Adapting conv1 for 2-Channel Input (Cell `-iqMyPRw3lHm`)
 
@@ -275,7 +275,7 @@ def _adapt_conv1(net, pretrained_init):
 
 The total weight energy per filter is conserved: `(R + 0.5B) + (G + 0.5B) = R + G + B`, so the network receives appropriately scaled inputs from the start without needing a large warm-up period.
 
-### 7.3 build_resnet18_v2 — Dropout Regularisation (Cell `-iqMyPRw3lHm`)
+### 7.3 build_resnet18_v2 - Dropout Regularisation (Cell `-iqMyPRw3lHm`)
 
 ```python
 def build_resnet18_v2(pretrained_init=True, dropout=0.4):
@@ -286,15 +286,15 @@ def build_resnet18_v2(pretrained_init=True, dropout=0.4):
     )
 ```
 
-Dropout (p=0.4) before the final linear layer prevents the 512-dimensional feature vector from overfitting to training region characteristics — particularly important for the geographic generalisation task.
+Dropout (p=0.4) before the final linear layer prevents the 512-dimensional feature vector from overfitting to training region characteristics - particularly important for the geographic generalisation task.
 
 **Output:** A single raw logit. Applying `sigmoid` gives the probability of oil slick present. The threshold for the binary decision is 0.5.
 
 ---
 
-## 8. Training Loop — ResNet-18
+## 8. Training Loop - ResNet-18
 
-> Training is the iterative process where the model looks at batches of labelled chips, makes predictions, measures how wrong it was (the loss), and updates its weights to do better next time. Several design choices here — how the loss is computed, how the learning rate changes over time, and when to stop training — each address a specific failure mode like overconfidence, unstable convergence, or overfitting. This section covers each of those choices and why they were made.
+> Training is the iterative process where the model looks at batches of labelled chips, makes predictions, measures how wrong it was (the loss), and updates its weights to do better next time. Several design choices here - how the loss is computed, how the learning rate changes over time, and when to stop training - each address a specific failure mode like overconfidence, unstable convergence, or overfitting. This section covers each of those choices and why they were made.
 
 ### 8.1 Loss Function
 
@@ -360,7 +360,7 @@ The training curve shows loss, F1, and AUROC over epochs (plotted in Cell `bKF5l
 
 ## 9. Evaluation
 
-> After training, we run the best saved model on the held-out test set — data it has never seen — to get an honest estimate of real-world performance. We evaluate under two different test conditions: the random split (same ocean regions as training) and the geographic split (Mediterranean only, never seen during training). Comparing the two tells us how well the model generalises beyond its training environment.
+> After training, we run the best saved model on the held-out test set - data it has never seen - to get an honest estimate of real-world performance. We evaluate under two different test conditions: the random split (same ocean regions as training) and the geographic split (Mediterranean only, never seen during training). Comparing the two tells us how well the model generalises beyond its training environment.
 
 ### 9.1 Metrics (Cell `Ridu_zfM3lHo`)
 
@@ -375,18 +375,18 @@ Three complementary metrics are reported:
 | Metric | What it measures |
 |--------|-----------------|
 | **Accuracy** | Fraction of correct predictions (useful baseline for balanced datasets) |
-| **F1 Score** | Harmonic mean of precision and recall — robust to any residual class imbalance |
-| **AUROC** | Area Under the ROC Curve — threshold-free discriminability; how well the model separates the two classes at any operating point |
+| **F1 Score** | Harmonic mean of precision and recall - robust to any residual class imbalance |
+| **AUROC** | Area Under the ROC Curve - threshold-free discriminability; how well the model separates the two classes at any operating point |
 
 F1 and AUROC are the primary metrics: F1 reflects real-world classification quality at the default 0.5 threshold; AUROC measures separability regardless of threshold, capturing how much headroom exists for tuning.
 
-### 9.2 Geographic Split — Separate Retraining (Cell `j-o8eusx3lHp`)
+### 9.2 Geographic Split - Separate Retraining (Cell `j-o8eusx3lHp`)
 
 The geographic split uses a **different training set** (non-Mediterranean regions), so it requires:
 1. Recomputing channel statistics from the geographic training split
 2. Training a fresh model from scratch with those statistics
 
-This ensures the geographic evaluation genuinely tests out-of-distribution generalisation — the model has never seen Mediterranean ocean statistics during normalisation or training.
+This ensures the geographic evaluation genuinely tests out-of-distribution generalisation - the model has never seen Mediterranean ocean statistics during normalisation or training.
 
 ---
 
@@ -396,14 +396,14 @@ This ensures the geographic evaluation genuinely tests out-of-distribution gener
 
 **Full quantitative comparison (ResNet-18 vs TerraMind) is in [`RESULTS.md`](RESULTS.md)**, which covers per-split analysis, AUROC interpretation, and a discussion of when each model is the stronger choice.
 
-### ResNet-18 — `results/2026-06-13_15-36-23/results.json`
+### ResNet-18 - `results/2026-06-13_15-36-23/results.json`
 
 | Split | Accuracy | F1 | AUROC |
 |-------|----------|----|-------|
 | **Random** | 0.8036 | 0.8136 | 0.8573 |
 | **Geographic (OOD)** | 0.6824 | 0.7117 | 0.8108 |
 
-### TerraMind — `results/2026-07-10_02-40-59/results.json`
+### TerraMind - `results/2026-07-10_02-40-59/results.json`
 
 | Split | Accuracy | F1 | AUROC |
 |-------|----------|----|-------|
@@ -416,7 +416,7 @@ This ensures the geographic evaluation genuinely tests out-of-distribution gener
 
 - Under distribution shift (geographic OOD), TerraMind outperforms ResNet-18 by **+0.040 F1** and **+0.027 accuracy**. The frozen backbone's SAR-specific pretraining generalises better to unseen ocean regions than a fine-tuned CNN that can overfit to training-region statistics.
 
-- Both models maintain AUROC above 0.80 across all conditions, indicating that the underlying oil slick signal transfers geographically — the F1 gap at threshold 0.5 is partly a calibration issue that a tuned threshold would recover.
+- Both models maintain AUROC above 0.80 across all conditions, indicating that the underlying oil slick signal transfers geographically - the F1 gap at threshold 0.5 is partly a calibration issue that a tuned threshold would recover.
 
 **Channel statistics (ResNet-18, random training split):**
 ```
@@ -434,9 +434,9 @@ VH:  μ = −25.76 dB,  σ = 15.93 dB
 
 ## 11. Failure Case Analysis
 
-> Aggregate metrics tell us how often the model is wrong, but not *why*. Inspecting the most confidently wrong predictions — the cases where the model was sure and still got it wrong — reveals what visual patterns are confusing it and points toward specific improvements.
+> Aggregate metrics tell us how often the model is wrong, but not *why*. Inspecting the most confidently wrong predictions - the cases where the model was sure and still got it wrong - reveals what visual patterns are confusing it and points toward specific improvements.
 
-The `show_failures` function (Cell `gZeR21Gv3lHq`) identifies the **most confident wrong predictions** — cases where the model assigned high probability to the wrong class:
+The `show_failures` function (Cell `gZeR21Gv3lHq`) identifies the **most confident wrong predictions** - cases where the model assigned high probability to the wrong class:
 
 ```python
 wrong = np.where(preds != labels)[0]
@@ -451,7 +451,7 @@ Common failure patterns observed:
 
 ---
 
-## 12. Standalone Training Script — ResNet-18
+## 12. Standalone Training Script - ResNet-18
 
 [`train.py`](train.py) is a self-contained refactoring of the notebook that adds:
 
@@ -473,11 +473,11 @@ tail -f results/<run_id>/train.log          # follow progress
 
 ---
 
-## 13. Model Architecture — TerraMind
+## 13. Model Architecture - TerraMind
 
 ### 13.1 What is TerraMind?
 
-TerraMind-1.0-base is a geospatial foundation model developed jointly by IBM and ESA, available on HuggingFace at `ibm-esa-geospatial/TerraMind-1.0-base`. It is a Vision Transformer (ViT-Base) pretrained on large-scale, multi-modal Earth observation data including Sentinel-1 GRD, Sentinel-1 RTC, Sentinel-2 L2A, DEM, and LULC. Crucially for this project, it has a native Sentinel-1 GRD input modality — it was pretrained on the same sensor and polarisation bands (VV, VH) as the OilSlick dataset.
+TerraMind-1.0-base is a geospatial foundation model developed jointly by IBM and ESA, available on HuggingFace at `ibm-esa-geospatial/TerraMind-1.0-base`. It is a Vision Transformer (ViT-Base) pretrained on large-scale, multi-modal Earth observation data including Sentinel-1 GRD, Sentinel-1 RTC, Sentinel-2 L2A, DEM, and LULC. Crucially for this project, it has a native Sentinel-1 GRD input modality - it was pretrained on the same sensor and polarisation bands (VV, VH) as the OilSlick dataset.
 
 The architecture is a 12-layer ViT-Base transformer:
 - **Hidden dimension:** 768
@@ -491,7 +491,7 @@ The architecture is a 12-layer ViT-Base transformer:
 Rather than fine-tuning the full backbone, we use **linear probing**: the backbone weights are frozen entirely and a small classification head is trained on top of the extracted features. This is appropriate here because:
 
 1. ~650 training samples is far too few to safely update 300 M parameters without catastrophic overfitting
-2. TerraMind was pretrained on SAR data from the same sensor — the frozen features are already highly relevant for the task
+2. TerraMind was pretrained on SAR data from the same sensor - the frozen features are already highly relevant for the task
 3. It produces a clean comparison with ResNet-18: one model is fully supervised end-to-end, the other shows what pretrained SAR representations alone can achieve
 
 **Trainable parameters:** 770 (Dropout + Linear(768→1)) out of ~300 M total backbone parameters.
@@ -509,18 +509,18 @@ Input to the head is the **mean-pooled output of the last transformer layer**:
 
 ```python
 out   = backbone(x)       # list of 12 layer outputs, each (B, 196, 768)
-feats = out[-1].mean(dim=1)  # (B, 768) — global average pool over patch tokens
+feats = out[-1].mean(dim=1)  # (B, 768) - global average pool over patch tokens
 ```
 
 Mean pooling over all 196 patch tokens gives a single global representation of the chip. This is the standard linear probing protocol for ViT models and avoids any positional bias. The final layer (index −1, depth 12) contains the most abstract, task-agnostic representations and is the appropriate choice for classification probing.
 
-Dropout (p=0.4) is applied before the linear layer to match the ResNet-18 head and reduce overconfident predictions — with only 770 parameters the main risk is overconfidence rather than overfitting in the traditional sense.
+Dropout (p=0.4) is applied before the linear layer to match the ResNet-18 head and reduce overconfident predictions - with only 770 parameters the main risk is overconfidence rather than overfitting in the traditional sense.
 
 **Output:** A single raw logit. `sigmoid` gives the oil-slick probability; threshold is 0.5.
 
 ---
 
-## 14. Preprocessing — TerraMind
+## 14. Preprocessing - TerraMind
 
 ### 14.1 Input modality
 
@@ -559,11 +559,11 @@ chip = (chip - _TM_MEAN) / _TM_STD
 
 These values (`v1_pretraining_mean["untok_sen1grd@224"]` and `v1_pretraining_std["untok_sen1grd@224"]`) are sourced directly from the terratorch library. Using the pretraining statistics is essential: the backbone's patch embedding weights are calibrated to this input scale and the model will produce meaningless representations if the input distribution shifts from what it saw during pretraining.
 
-**Why not Welford statistics from training split?** The backbone is frozen — it has no mechanism to adapt to a different normalisation. The model has already converged to specific activations for inputs normalised as above; re-normalising to training-split statistics would push all inputs into an out-of-distribution range for the backbone.
+**Why not Welford statistics from training split?** The backbone is frozen - it has no mechanism to adapt to a different normalisation. The model has already converged to specific activations for inputs normalised as above; re-normalising to training-split statistics would push all inputs into an out-of-distribution range for the backbone.
 
 ### 14.4 Augmentation
 
-During feature extraction, the same spatial augmentations as ResNet-18 are applied (horizontal flip, vertical flip, random 90° rotation, Gaussian noise σ=0.05). However, because features are pre-extracted and cached, augmentation only affects the single extraction pass — the head trains on those fixed augmented features. This provides modest diversity but does not give the same benefit as on-the-fly augmentation during training. A future improvement would be to extract features multiple times with different augmentations and pool them.
+During feature extraction, the same spatial augmentations as ResNet-18 are applied (horizontal flip, vertical flip, random 90° rotation, Gaussian noise σ=0.05). However, because features are pre-extracted and cached, augmentation only affects the single extraction pass - the head trains on those fixed augmented features. This provides modest diversity but does not give the same benefit as on-the-fly augmentation during training. A future improvement would be to extract features multiple times with different augmentations and pool them.
 
 ---
 
@@ -571,9 +571,9 @@ During feature extraction, the same spatial augmentations as ResNet-18 are appli
 
 ### Why pre-extract instead of running the backbone per batch?
 
-With the backbone frozen, running it through the training loop is pure computation waste — the same input will always produce the same output. More practically, the GPU was fully occupied by other processes (only ~700 MiB free out of 44 GiB), making it impossible to fit a 300 M-parameter ViT in the training loop.
+With the backbone frozen, running it through the training loop is pure computation waste - the same input will always produce the same output. More practically, the GPU was fully occupied by other processes (only ~700 MiB free out of 44 GiB), making it impossible to fit a 300 M-parameter ViT in the training loop.
 
-The solution is to run the backbone **once on CPU**, cache all features to disk, then train the head on those tensors — no backbone in the training loop at all.
+The solution is to run the backbone **once on CPU**, cache all features to disk, then train the head on those tensors - no backbone in the training loop at all.
 
 ```
 Backbone (CPU, once)
@@ -595,7 +595,7 @@ After extraction the backbone is deleted (`del backbone`) and the GPU cache is c
 
 ---
 
-## 16. Training Loop — TerraMind Head
+## 16. Training Loop - TerraMind Head
 
 ### 16.1 Loss function
 
@@ -613,21 +613,21 @@ optimizer = torch.optim.AdamW(head.parameters(), lr=1e-3, weight_decay=1e-3)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 ```
 
-The learning rate is higher than ResNet-18 (1e-3 vs 5e-5) because the head is initialised randomly and needs to reach a reasonable solution quickly. With only 770 parameters there is no risk of instability at this rate. Weight decay is slightly higher (1e-3 vs 5e-4) for the same reason — the small parameter count makes explicit regularisation less critical, but it stabilises training.
+The learning rate is higher than ResNet-18 (1e-3 vs 5e-5) because the head is initialised randomly and needs to reach a reasonable solution quickly. With only 770 parameters there is no risk of instability at this rate. Weight decay is slightly higher (1e-3 vs 5e-4) for the same reason - the small parameter count makes explicit regularisation less critical, but it stabilises training.
 
 ### 16.3 Training hyperparameters
 
 | Hyperparameter | Value | Note |
 |---|---|---|
-| Epochs (max) | 200 | More than ResNet-18 because each epoch is ~1 ms — no cost to running longer |
+| Epochs (max) | 200 | More than ResNet-18 because each epoch is ~1 ms - no cost to running longer |
 | Learning rate | 1e-3 | Higher than ResNet-18; safe given the tiny head |
 | Weight decay | 1e-3 | Slightly higher than ResNet-18 |
-| Batch size | 256 | Large batch is fine — no image I/O, just matrix multiplications on cached tensors |
+| Batch size | 256 | Large batch is fine - no image I/O, just matrix multiplications on cached tensors |
 | Dropout | 0.4 | Matched to ResNet-18 for a fair comparison |
 | Label smoothing | 0.05 | Identical to ResNet-18 |
 | LR schedule | CosineAnnealingLR, T_max=200 | |
 | Monitor | val F1 | Identical to ResNet-18 |
-| Patience | 30 epochs | Longer than ResNet-18's 20 — head loss surface is noisy, needs more patience |
+| Patience | 30 epochs | Longer than ResNet-18's 20 - head loss surface is noisy, needs more patience |
 
 ### 16.4 Early stopping and checkpointing
 
@@ -639,7 +639,7 @@ Training convergence:
 
 ---
 
-## 17. Standalone Training Script — TerraMind
+## 17. Standalone Training Script - TerraMind
 
 [`run_terramind.py`](run_terramind.py) handles the full TerraMind pipeline end-to-end:
 
@@ -662,7 +662,7 @@ Output structure per run:
 results/YYYY-MM-DD_HH-MM-SS/
 ├── results.json         # final test metrics (both splits)
 ├── histories.json       # val F1 and AUROC per epoch (both heads)
-├── features/            # cached (N, 768) tensors — skipped on re-run
+├── features/            # cached (N, 768) tensors - skipped on re-run
 │   ├── rand_train_feats.pt / rand_train_labels.pt
 │   ├── rand_val_feats.pt   / rand_val_labels.pt
 │   ├── rand_test_feats.pt  / rand_test_labels.pt
@@ -681,7 +681,7 @@ results/YYYY-MM-DD_HH-MM-SS/
 
 ---
 
-## 18. ResNet-18 from Scratch — Ablation
+## 18. ResNet-18 from Scratch - Ablation
 
 [`train_scratch.py`](train_scratch.py) trains ResNet-18 with **no pretrained weights** using an otherwise identical pipeline to `train.py`. Its purpose is to quantify how much of ResNet-18's performance comes from ImageNet initialisation versus the training data and pipeline.
 
@@ -718,16 +718,16 @@ python make_comparison_plots.py
 
 | File | What it shows |
 |------|---------------|
-| `fig1_f1_bar.png` | Grouped bar chart — F1 score for ResNet-18 and TerraMind side by side within each split (Random / Geographic). Shows which model wins on each split at a glance. |
-| `fig2_ood_f1.png` | Slope chart — F1 score per model connected across splits (Random → Geographic). The slope direction and annotated Δ show the magnitude of OOD degradation for each model. |
-| `fig3_f1_auroc_hue.png` | Two-panel bar chart — left panel F1, right panel AUROC, same grouped layout as fig1. Lets you compare both metrics in one view. |
-| `fig4_confusion_matrices.png` | 2×2 grid of confusion matrices — rows are splits (Random, Geographic), columns are models (ResNet-18, TerraMind). All four rendered identically from saved checkpoints; numbers show raw counts. |
-| `fig5_results_table.png` | Summary table — rows grouped by split, columns are Accuracy / F1 / AUROC. Within each split group the better model's values are bolded. Random rows shaded light blue, Geographic rows shaded light orange. |
-| `fig6_dumbbell.png` | Dumbbell chart — one column per model; filled dot = Random F1, open dot = Geographic F1, connected by a vertical segment. Absolute F1 values labeled beside each dot; Δ labeled on the segment in bold. Shows individual scores and degradation gap simultaneously in a single compact view. |
+| `fig1_f1_bar.png` | Grouped bar chart - F1 score for ResNet-18 and TerraMind side by side within each split (Random / Geographic). Shows which model wins on each split at a glance. |
+| `fig2_ood_f1.png` | Slope chart - F1 score per model connected across splits (Random → Geographic). The slope direction and annotated Δ show the magnitude of OOD degradation for each model. |
+| `fig3_f1_auroc_hue.png` | Two-panel bar chart - left panel F1, right panel AUROC, same grouped layout as fig1. Lets you compare both metrics in one view. |
+| `fig4_confusion_matrices.png` | 2×2 grid of confusion matrices - rows are splits (Random, Geographic), columns are models (ResNet-18, TerraMind). All four rendered identically from saved checkpoints; numbers show raw counts. |
+| `fig5_results_table.png` | Summary table - rows grouped by split, columns are Accuracy / F1 / AUROC. Within each split group the better model's values are bolded. Random rows shaded light blue, Geographic rows shaded light orange. |
+| `fig6_dumbbell.png` | Dumbbell chart - one column per model; filled dot = Random F1, open dot = Geographic F1, connected by a vertical segment. Absolute F1 values labeled beside each dot; Δ labeled on the segment in bold. Shows individual scores and degradation gap simultaneously in a single compact view. |
 
 **Color conventions used across all plots:**
-- Light blue (`#6BAED6`) — ResNet-18
-- Light orange (`#FC8D59`) — TerraMind
+- Light blue (`#6BAED6`) - ResNet-18
+- Light orange (`#FC8D59`) - TerraMind
 
 ---
 
@@ -735,9 +735,9 @@ python make_comparison_plots.py
 
 ```
 oilslick-detection/
-├── oilslick_baseline_1.ipynb    # Main notebook (ResNet-18 Sections 0–9, TerraMind Section 10)
+├── oilslick_baseline_1.ipynb    # Main notebook (ResNet-18 Sections 0-9, TerraMind Section 10)
 ├── train.py                     # ResNet-18 standalone training script (ImageNet pretrained)
-├── train_scratch.py             # ResNet-18 ablation — same pipeline, no pretrained weights
+├── train_scratch.py             # ResNet-18 ablation - same pipeline, no pretrained weights
 ├── run_terramind.py             # TerraMind feature extraction + head training script
 ├── make_comparison_plots.py     # Generates all 5 comparison figures → results/comparison_plots/
 ├── download_data.py             # Dataset download helper
